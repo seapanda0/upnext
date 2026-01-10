@@ -19,6 +19,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.initialize
 import com.motiflow.upnext.screens.login.LoginScreen
 import com.motiflow.upnext.screens.splashscreen.SplashScreen
+import com.motiflow.upnext.screens.workertodolistscreen.WorkerTodoListScreen
 import com.motiflow.upnext.ui.theme.UpNextTheme
 
 const val USE_EMULATOR = true
@@ -49,7 +50,12 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = Routes.LOGIN_SCREEN
                     ){
-                        LoginScreen()
+                        LoginScreen(openAndPopUp = {route, popUp -> UpNextAppState.navigateAndPopUp(route, popUp)})
+                    }
+                    composable(
+                        route = Routes.WORKER_TODO_LIST_SCREEN
+                    ){
+                        WorkerTodoListScreen()
                     }
 
                 }
