@@ -1,6 +1,7 @@
 package com.motiflow.upnext
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentId
 
 enum class AccountType {
     WORKER,
@@ -28,9 +29,9 @@ enum class TodoStatus{
 }
 
 data class Todo(
-    val id: String,
-    val title: String,
-    val description: String,
+    @DocumentId val id: String? = null,
+    val title: String? = null,
+    val description: String? = null,
 
     val scheduledAt: Timestamp? = null,
     val deadlineAt : Timestamp? = null,
