@@ -19,18 +19,17 @@ class RegisterViewModel() : ViewModel(){
 
     val registeringUser = MutableStateFlow<User>(User())
     val password = MutableStateFlow("")
-
-    fun updateEmail(newEmail: String){
-        registeringUser.value.email = newEmail
-    }
     fun updatePassword(newPassword: String){
         password.value = newPassword
     }
+    fun updateEmail(newEmail: String){
+        registeringUser.value = registeringUser.value.copy(email = newEmail)
+    }
     fun updateAccountType(newAccType: AccountType){
-        registeringUser.value.accountType = newAccType
+        registeringUser.value = registeringUser.value.copy(accountType = newAccType)
     }
     fun updateUserName(newUserName: String){
-        registeringUser.value.username = newUserName
+        registeringUser.value = registeringUser.value.copy(username = newUserName)
     }
     fun switchToLogin(navigateTo: (String) -> Unit){
         navigateTo(Routes.LOGIN_SCREEN)
