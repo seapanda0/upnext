@@ -19,6 +19,10 @@ class LoginViewModel() : ViewModel(){
     fun updatePassword(newPassword: String){
         password.value = newPassword
     }
+
+    fun switchToRegister(navigateTo: (String) -> Unit){
+        navigateTo(Routes.REGISTER_SCREEN)
+    }
     fun onLoginClick(openAndPopUp: (String, String) -> Unit){
         viewModelScope.launch {
             try{
@@ -29,6 +33,8 @@ class LoginViewModel() : ViewModel(){
             } catch (e: FirebaseAuthInvalidCredentialsException){
 
             } catch (e: FirebaseAuthInvalidCredentialsException){
+
+            } catch (e: IllegalArgumentException){
 
             }
         }

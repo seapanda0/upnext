@@ -7,17 +7,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.motiflow.upnext.Routes
 
 @Composable
 fun LoginScreen(
     viewModel : LoginViewModel = viewModel(),
-    openAndPopUp : (String, String) -> Unit
+    openAndPopUp : (String, String) -> Unit,
+    navigateTo : (String) -> Unit
 ){
     val email = viewModel.email.collectAsState()
     val password = viewModel.password.collectAsState()
 
     Column() {
+        Text(
+            text = Routes.LOGIN_SCREEN,
+            fontSize = 40.sp
+        )
         OutlinedTextField(
             value = email.value,
             onValueChange = {viewModel.updateEmail(it)},
@@ -33,5 +41,11 @@ fun LoginScreen(
         ) {
             Text("Login")
         }
+        Button(
+            onClick = {viewModel.switchToRegister(navigateTo)}
+        ) {
+            Text("Register Instead")
+        }
+
     }
 }
