@@ -11,7 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.motiflow.upnext.Routes
-import com.motiflow.upnext.model.AccountType
+import com.motiflow.upnext.AccountType
 
 @Composable
 fun RegisterScreen(
@@ -19,19 +19,22 @@ fun RegisterScreen(
     openAndPopUp : (String, String) -> Unit,
     navigateTo : (String) -> Unit
 ){
-    val email = viewModel.email.collectAsState()
+    val registeringUser = viewModel.registeringUser.collectAsState()
     val password = viewModel.password.collectAsState()
-    val account_type = viewModel.account_type.collectAsState()
-
     Column() {
         Text(
             text = Routes.REGISTER_SCREEN,
             fontSize = 40.sp
         )
         OutlinedTextField(
-            value = email.value,
+            value = registeringUser.value.email,
             onValueChange = {viewModel.updateEmail(it)},
             placeholder = { Text("Email")}
+        )
+        OutlinedTextField(
+            value = registeringUser.value.username,
+            onValueChange = {viewModel.updateUserName(it)},
+            placeholder = { Text("Username")}
         )
         OutlinedTextField(
             value = password.value,
@@ -40,14 +43,14 @@ fun RegisterScreen(
         )
         Row(){
             RadioButton(
-                selected = (account_type.value == AccountType.WORKER),
+                selected = (registeringUser.value.accountType == AccountType.WORKER),
                 onClick = {viewModel.updateAccountType((AccountType.WORKER))}
             )
             Text("Worker")
         }
         Row(){
             RadioButton(
-                selected = (account_type.value == AccountType.MANAGER),
+                selected = (registeringUser.value.accountType == AccountType.MANAGER),
                 onClick = {viewModel.updateAccountType((AccountType.MANAGER))}
             )
             Text("Manager")

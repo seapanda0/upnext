@@ -1,10 +1,13 @@
 package com.motiflow.upnext.model
 
 import com.google.firebase.Firebase
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.motiflow.upnext.User
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
@@ -27,11 +30,11 @@ object AccountService {
     }
 
     suspend fun signIn(email: String, password: String) {
-        Firebase.auth.signInWithEmailAndPassword(email, password).await()
+         Firebase.auth.signInWithEmailAndPassword(email, password).await()
     }
 
-    suspend fun signUp(email: String, password: String) {
-        Firebase.auth.createUserWithEmailAndPassword(email, password).await()
+    suspend fun signUp(email: String, password: String): AuthResult {
+        return Firebase.auth.createUserWithEmailAndPassword(email, password).await()
     }
 
     suspend fun signOut() {

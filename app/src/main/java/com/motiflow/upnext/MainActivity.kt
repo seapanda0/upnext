@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import com.google.firebase.initialize
 import com.motiflow.upnext.screens.login.LoginScreen
 import com.motiflow.upnext.screens.register.RegisterScreen
@@ -75,6 +76,7 @@ class MainActivity : ComponentActivity() {
     private fun configureFirebaseServices(){
         if(USE_EMULATOR){
             Firebase.auth.useEmulator(LOCALHOST, AUTH_PORT)
+            Firebase.firestore.useEmulator(LOCALHOST, FIRESTORE_PORT)
         }
     }
 }
