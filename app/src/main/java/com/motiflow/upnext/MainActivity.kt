@@ -28,8 +28,6 @@ const val LOCALHOST = "192.168.100.164"
 const val AUTH_PORT = 9099
 const val FIRESTORE_PORT = 8080
 
-
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
