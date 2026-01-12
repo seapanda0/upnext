@@ -1,5 +1,6 @@
 package com.motiflow.upnext.screens.workertodolistscreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import com.motiflow.upnext.model.DataRepoService
 
 @Composable
 fun WorkerTodoListScreen(
+    navigateTo: (String) -> Unit,
     viewModel: WorkerTodoListViewModel = viewModel()
 ){
     val todos = viewModel.todos.collectAsState(initial = emptyList())
@@ -42,7 +44,12 @@ fun WorkerTodoListScreen(
 
             LazyColumn(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
                 items(todos.value){ todo ->
-                    TodoItem(todo)
+                    TodoItem(
+                        todo = todo,
+                        modifier = Modifier
+                            .clickable{viewModel.onClickTodo(navigateTo, todo.id!!)}
+                            .padding(16.dp)
+                    )
                 }
             }
         }
@@ -50,8 +57,11 @@ fun WorkerTodoListScreen(
 }
 
 @Composable
-fun TodoItem(todo : Todo){
-    Row() {
+fun TodoItem(
+    todo : Todo,
+    modifier: Modifier = Modifier
+){
+    Row(modifier) {
         Column() {
             Row() {
                 Text(todo.title!!)

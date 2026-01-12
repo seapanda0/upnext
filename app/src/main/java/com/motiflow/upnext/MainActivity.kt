@@ -4,20 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import com.google.firebase.initialize
+import com.motiflow.upnext.screens.addnewtodo.AddNewTodoScreen
 import com.motiflow.upnext.screens.login.LoginScreen
 import com.motiflow.upnext.screens.register.RegisterScreen
 import com.motiflow.upnext.screens.splashscreen.SplashScreen
@@ -66,9 +61,19 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = Routes.WORKER_TODO_LIST_SCREEN
                     ){
-                        WorkerTodoListScreen()
+                        WorkerTodoListScreen(navigateTo = {route -> UpNextAppState.navigateTo(route)})
                     }
+                    composable (
+                        route = Routes.ADD_NEW_TODO_SCREEN
+                    ){ AddNewTodoScreen() }
 
+                    composable (
+                        route = Routes.EDIT_TODO_SCREEN + "?todoId={todoId}",
+                        arguments = listOf(navArgument(name = "todoId"){
+                            type = NavType.StringType
+                            defaultValue = "-1"
+                        })
+                    ){ AddNewTodoScreen() }
                 }
             }
         }

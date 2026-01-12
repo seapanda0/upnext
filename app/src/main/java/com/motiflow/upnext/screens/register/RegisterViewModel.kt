@@ -49,7 +49,7 @@ class RegisterViewModel() : ViewModel(){
 
                 DataRepoService.addUser(registeringUser.value)
 
-                openAndPopUp(Routes.WORKER_TODO_LIST_SCREEN, Routes.REGISTER_SCREEN)
+                openAndPopUp(Routes.WORKER_TODO_LIST_SCREEN, Routes.LOGIN_SCREEN)
 
             } catch (e: FirebaseAuthWeakPasswordException) {
 
