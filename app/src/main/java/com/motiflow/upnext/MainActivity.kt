@@ -13,6 +13,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.motiflow.upnext.screens.addnewtodo.AddNewTodoScreen
+import com.motiflow.upnext.screens.edittodoscreen.EditTodoScreen
 import com.motiflow.upnext.screens.login.LoginScreen
 import com.motiflow.upnext.screens.register.RegisterScreen
 import com.motiflow.upnext.screens.splashscreen.SplashScreen
@@ -73,7 +74,15 @@ class MainActivity : ComponentActivity() {
                             type = NavType.StringType
                             defaultValue = "-1"
                         })
-                    ){ AddNewTodoScreen() }
+                    ){
+                        EditTodoScreen(
+                            todoId = it.arguments?.getString("todoId") ?: "-1",
+                            popUpScreen = UpNextAppState::popUp,
+                            navigateTo = {route -> UpNextAppState.navigateTo(route)},
+                            restartApp = {route -> UpNextAppState.clearAndNavigate(route)}
+
+                        )
+                    }
                 }
             }
         }

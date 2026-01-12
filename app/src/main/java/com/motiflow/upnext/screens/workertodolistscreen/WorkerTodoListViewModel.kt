@@ -19,8 +19,8 @@ class WorkerTodoListViewModel() : ViewModel() {
     }
     fun onDummyAddTodoClick(){
         viewModelScope.launch {
-            Log.d("WORKER TODO VM", "BUTTON PRESSED")
-            DataRepoService.workerAddTodo(dummyTestTodo)
+//            Log.d("WORKER TODO VM", "BUTTON PRESSED")
+            DataRepoService.workerCreateTodo(dummyTestTodo)
         }
     }
 }

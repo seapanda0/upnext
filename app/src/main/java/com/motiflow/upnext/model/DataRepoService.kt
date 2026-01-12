@@ -1,10 +1,10 @@
 package com.motiflow.upnext.model
 
-import androidx.compose.foundation.shape.AbsoluteCutCornerShape
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import com.motiflow.upnext.AcceptanceStatus
 import com.motiflow.upnext.Todo
 import com.motiflow.upnext.TodoStatus
@@ -41,7 +41,7 @@ object DataRepoService {
             .set(user)
             .await()
     }
-    suspend fun workerAddTodo(todo: Todo){
+    suspend fun workerCreateTodo(todo: Todo){
         val todoWithMetaData = todo.copy(
             createdByUid = AccountService.currentUserId,
             assignedToUid = AccountService.currentUserId,
@@ -62,4 +62,24 @@ object DataRepoService {
             .add(todoWithMetaData)
             .await()
     }
+
+    suspend fun readTodo(todoId: String): Todo? {
+        return Firebase.firestore
+            .collection(COLLECTIONS.TODO)
+            .document(todoId).get().await().toObject()
+    }
+    suspend fun updateTodo(todo: Todo) {
+        val updatedTodo = todo.copy(
+            updateAt = Timestamp.now()
+        )
+        Firebase.firestore
+            .collection(COLLECTIONS.TODO)
+            .document(updatedTodo.id!!).set(updatedTodo).await()
+    }
+    suspend fun deleteTodo(todoId: String) {
+        Firebase.firestore
+            .collection(COLLECTIONS.TODO)
+            .document(todoId).delete().await()
+    }
+
 }

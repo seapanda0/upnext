@@ -6,10 +6,9 @@ import androidx.navigation.NavHostController
 // Wrapper for navcontroller object
 @Stable
 class UpNextAppState (val navController: NavHostController){
-    fun popOp(){
+    fun popUp(){
         navController.popBackStack()
     }
-
     fun navigateTo(route: String){
         navController.navigate(route){ launchSingleTop = true}
     }
@@ -17,6 +16,12 @@ class UpNextAppState (val navController: NavHostController){
         navController.navigate(route){
             launchSingleTop = true
             popUpTo (popUp){ inclusive = true }
+        }
+    }
+    fun clearAndNavigate(route: String) {
+        navController.navigate(route) {
+            launchSingleTop = true
+            popUpTo(0) { inclusive = true }
         }
     }
 
