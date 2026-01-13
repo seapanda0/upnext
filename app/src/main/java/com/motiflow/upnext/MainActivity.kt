@@ -65,9 +65,16 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(
-                        route = Routes.WORKER_TODO_LIST_SCREEN
+                        route = Routes.WORKER_TODO_LIST_SCREEN + "?workerId={workerId}",
+                        arguments = listOf(navArgument(name = "workerId"){
+                            type = NavType.StringType
+                            defaultValue = "-1"
+                        })
                     ){
-                        WorkerTodoListScreen(navigateTo = {route -> UpNextAppState.navigateTo(route)})
+                        WorkerTodoListScreen(
+                            workerId = it.arguments?.getString("workerId") ?: "-1",
+                            navigateTo = {route -> UpNextAppState.navigateTo(route)}
+                        )
                     }
                     composable (
                         route = Routes.EDIT_TODO_SCREEN + "?todoId={todoId}",

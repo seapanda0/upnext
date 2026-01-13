@@ -30,7 +30,6 @@ class LoginViewModel() : ViewModel(){
         viewModelScope.launch {
             try{
                 AccountService.signIn(email.value, password.value)
-
                 val user = DataRepoService.currentUser.first()
                 when(user?.accountType){
                     AccountType.MANAGER -> {

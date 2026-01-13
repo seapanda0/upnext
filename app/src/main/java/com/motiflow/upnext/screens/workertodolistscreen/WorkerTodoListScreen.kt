@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,10 +34,13 @@ import com.motiflow.upnext.Todo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkerTodoListScreen(
+    workerId : String,
     navigateTo: (String) -> Unit,
     viewModel: WorkerTodoListViewModel = viewModel()
 ) {
     val todos = viewModel.todos.collectAsState(initial = emptyList())
+    // Fill back workerid here
+    LaunchedEffect(Unit) {viewModel.initialize(workerId) }
     Scaffold(
         topBar = {
             TopAppBar(

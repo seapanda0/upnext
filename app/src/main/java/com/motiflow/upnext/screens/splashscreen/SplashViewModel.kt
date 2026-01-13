@@ -16,6 +16,7 @@ class SplashViewModel : ViewModel(){
             return
         }
         viewModelScope.launch {
+            DataRepoService.accountInitialCheck()
             val user = DataRepoService.currentUser.first()
             when(user?.accountType){
                 AccountType.MANAGER -> {

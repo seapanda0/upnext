@@ -1,8 +1,8 @@
 package com.motiflow.upnext.model
 
-import android.accounts.Account
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.snapshots
@@ -31,6 +31,34 @@ object USER_DOCUMENT_FIELDS{
     const val ACCOUNT_TYPE = "accountType"
 }
 object DataRepoService {
+    var currentUserType: AccountType? = null
+
+    suspend fun accountInitialCheck () {
+        val firebaseUser = Firebase.auth.currentUser ?: run{
+            currentUserType = null
+            return
+        }
+        try{
+            val snapshot = Firebase.firestore
+                .collection(COLLECTIONS.USER)
+                .document(firebaseUser.uid)
+                .get()
+                .await()
+
+            val user = snapshot.toObject(User::class.java)
+            currentUserType = user?.accountType
+        }catch (e: Exception){
+            e.printStackTrace()
+            currentUserType = null
+        }
+    }
+
+    suspend fun todosForWorker(workerId: String): Flow<List<Todo>>{
+        return Firebase.firestore
+            .collection(COLLECTIONS.TODO)
+            .whereEqualTo(TODO_DOCUMENT_FIELDS.assignmentUID, workerId)
+            .dataObjects()
+    }
     @OptIn(ExperimentalCoroutinesApi::class)
     val todos: Flow<List<Todo>>
         get() =

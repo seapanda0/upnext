@@ -22,7 +22,6 @@ fun SplashScreen(
     openAndPopUp: (String, String) -> Unit,
     viewModel: SplashViewModel = viewModel()
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
