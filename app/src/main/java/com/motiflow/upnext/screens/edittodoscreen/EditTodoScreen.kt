@@ -27,7 +27,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +41,6 @@ import com.google.firebase.Timestamp
 import com.motiflow.upnext.AcceptanceStatus
 import com.motiflow.upnext.TodoStatus
 import java.util.Date
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
@@ -126,22 +124,19 @@ fun EditTodoScreen(
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-        // --- Scheduled Date & Time ---
-        Text(text = "Scheduled:")
-        Row {
-            Text(
-                text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(scheduledDateMillis)),
-                modifier = Modifier
-                    .clickable { showScheduledDatePicker = true }
-                    .padding(8.dp)
-            )
-            Text(
-                text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(scheduledTimeMillis)),
-                modifier = Modifier
-                    .clickable { showTimePicker(context, scheduledTimeMillis) { scheduledTimeMillis = it } }
-                    .padding(8.dp)
-            )
-        }
+        // SCHEDULED TIME AND DEADLINE TIME START
+        // ---- Scheduled ----
+        DateTimeRow(
+            label = "Scheduled",
+            dateMillis = scheduledDateMillis,
+            timeMillis = scheduledTimeMillis,
+            onDateClick = { showScheduledDatePicker = true },
+            onTimeClick = {
+                showTimePicker(context, scheduledTimeMillis) {
+                    scheduledTimeMillis = it
+                }
+            }
+        )
 
         if (showScheduledDatePicker) {
             DatePickerDialogComposable(
@@ -151,24 +146,18 @@ fun EditTodoScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // --- Deadline Date & Time ---
-        Text(text = "Deadline:")
-        Row {
-            Text(
-                text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(deadlineDateMillis)),
-                modifier = Modifier
-                    .clickable { showDeadlineDatePicker = true }
-                    .padding(8.dp)
-            )
-            Text(
-                text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(deadlineTimeMillis)),
-                modifier = Modifier
-                    .clickable { showTimePicker(context, deadlineTimeMillis) { deadlineTimeMillis = it } }
-                    .padding(8.dp)
-            )
-        }
+        // ---- Deadline ----
+        DateTimeRow(
+            label = "Deadline",
+            dateMillis = deadlineDateMillis,
+            timeMillis = deadlineTimeMillis,
+            onDateClick = { showDeadlineDatePicker = true },
+            onTimeClick = {
+                showTimePicker(context, deadlineTimeMillis) {
+                    deadlineTimeMillis = it
+                }
+            }
+        )
 
         if (showDeadlineDatePicker) {
             DatePickerDialogComposable(
@@ -178,13 +167,9 @@ fun EditTodoScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-        Text("Created By: ${todo.createdByName}")
-        Text("Last Updated: ${todo.updateAt.toDate()}")
-
-
-        Spacer(Modifier.height(16.dp))
+        // SCHEDULED TIME AND DEADLINE TIME END
 
         // ---- Read-only fields ----
         Text(
@@ -238,7 +223,6 @@ fun EditTodoScreen(
         }
     }
 }
-
 
 // Merge time and date information after spilitting them
 fun combineDateAndTime(dateMillis: Long, timeMillis: Long): Timestamp {

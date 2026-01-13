@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.motiflow.upnext.Todo
-import com.motiflow.upnext.model.DataRepoService
 
 @Composable
 fun WorkerTodoListScreen(
