@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class WorkerTodoListViewModel() : ViewModel() {
+    private var _workerUid = "-1"
     private val _todos = MutableStateFlow<List<Todo>>(emptyList())
     val todos: StateFlow<List<Todo>> = _todos
     // Select what data to show depending on worker or manager
     fun initialize(workerUid: String){
         viewModelScope.launch {
+            _workerUid = workerUid
             val flow = if (workerUid == "-1"){
                 DataRepoService.todos
             }else{
@@ -25,12 +27,17 @@ class WorkerTodoListViewModel() : ViewModel() {
         }
     }
     fun onClickTodo(navigateTo: (String) -> Unit, todoId: String){
-        // Log.d("Worker todolist VM","Clicked")
-        // concatnate the todoID here
-        navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=${todoId}")
+        // If manager is performing this action, dont care about assignedtoid as
+        // existing todos be identified with todoId alone
+        navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=${todoId}"+"?assignedToId=-1")
     }
     fun addnewTodo(navigateTo: (String) -> Unit){
-        navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=-1")
+        if (DataRepoService.currentUserType == AccountType.MANAGER){
+            navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=-1"+"?assignedToId="+_workerUid)
+        }else{
+            // If it is just normal user adding a todo, both field -1
+            navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=-1"+"?assignedToId=-1")
+        }
     }
     fun onDeleteTodo(todoId: String){
         viewModelScope.launch {

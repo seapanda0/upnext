@@ -11,15 +11,18 @@ import kotlinx.coroutines.launch
 
 class EditTodoViewModel() : ViewModel() {
     val todo = MutableStateFlow<Todo>(DEFAULT_TODO)
-    var isNewTodo = true
+    var _isNewTodo = true
+    var _assignedToId = "-1"
 
-    fun initialize (todoId: String, restartApp: (String) -> Unit){
+    fun initialize (todoId: String, assignedToId : String ,restartApp: (String) -> Unit){
         viewModelScope.launch {
             if (todoId == "-1"){
-                isNewTodo = true
+                _isNewTodo = true
+                _assignedToId = assignedToId
                 todo.value = DEFAULT_TODO
+
             }else{
-                isNewTodo = false
+                _isNewTodo = false
                 todo.value = DataRepoService.readTodo(todoId)?: DEFAULT_TODO
             }
         }
@@ -35,10 +38,19 @@ class EditTodoViewModel() : ViewModel() {
     }
     fun saveTodo(popUpScreen:() -> Unit){
         viewModelScope.launch {
-            if (isNewTodo){
-                // Unsure, placeholder for now
-                DataRepoService.workerCreateTodo(todo.value)
+            if (_isNewTodo){
+                if(_assignedToId == "-1"){
+                    // If this is worker adding todo, datarepo will auto add his uid
+                    DataRepoService.workerCreateTodo(todo.value)
+                }else{
+                    // If this is manager adding todo, assign workerid
+                    todo.value = todo.value.copy(
+                        assignedToUid = _assignedToId
+                    )
+                    DataRepoService.managerCreateTodo(todo.value)
+                }
             }else {
+                // Updating procedure for both worker and manager is the same
                 DataRepoService.updateTodo(todo.value)
             }
             popUpScreen()

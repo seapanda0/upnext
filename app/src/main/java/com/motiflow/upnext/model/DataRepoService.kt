@@ -7,6 +7,7 @@ import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
+import com.motiflow.upnext.AcceptanceStatus
 import com.motiflow.upnext.AccountType
 import com.motiflow.upnext.Todo
 import com.motiflow.upnext.TodoStatus
@@ -32,6 +33,7 @@ object USER_DOCUMENT_FIELDS{
 }
 object DataRepoService {
     var currentUserType: AccountType? = null
+    var currentUserName: String = ""
 
     suspend fun accountInitialCheck () {
         val firebaseUser = Firebase.auth.currentUser ?: run{
@@ -47,6 +49,7 @@ object DataRepoService {
 
             val user = snapshot.toObject(User::class.java)
             currentUserType = user?.accountType
+            currentUserName = user?.username!!
         }catch (e: Exception){
             e.printStackTrace()
             currentUserType = null
@@ -101,7 +104,25 @@ object DataRepoService {
             assignedToUid = AccountService.currentUserId,
 
             // Undecided yet
-            createdByName = "PLACEHOLDER NAME",
+            createdByName = currentUserName,
+            acceptance = AcceptanceStatus.NOT_APPLICABLE,
+            status = TodoStatus.NOT_STARTED,
+            createdAt = Timestamp.now(),
+            updateAt = Timestamp.now()
+        )
+        Firebase.firestore
+            .collection(COLLECTIONS.TODO)
+            .add(todoWithMetaData)
+            .await()
+    }
+
+    suspend fun managerCreateTodo(todo: Todo){
+        val todoWithMetaData = todo.copy(
+            createdByUid = AccountService.currentUserId,
+
+            // Undecided yet
+            createdByName = currentUserName,
+            acceptance = AcceptanceStatus.NO_RESPONSE,
             status = TodoStatus.NOT_STARTED,
             createdAt = Timestamp.now(),
             updateAt = Timestamp.now()

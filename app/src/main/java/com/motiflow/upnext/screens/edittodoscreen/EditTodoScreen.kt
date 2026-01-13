@@ -51,6 +51,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTodoScreen(
+    assignedToId : String,
     todoId : String,
     popUpScreen : () -> Unit,
     navigateTo : (String) -> Unit,
@@ -60,7 +61,7 @@ fun EditTodoScreen(
     val todo by viewModel.todo.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {viewModel.initialize(todoId, restartApp)}
+    LaunchedEffect(Unit) {viewModel.initialize(todoId, assignedToId, restartApp)}
 
     // Key state to todo.id
     var title by remember(todo.id) { mutableStateOf(todo.title.orEmpty()) }

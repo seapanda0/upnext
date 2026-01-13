@@ -77,14 +77,20 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable (
-                        route = Routes.EDIT_TODO_SCREEN + "?todoId={todoId}",
-                        arguments = listOf(navArgument(name = "todoId"){
-                            type = NavType.StringType
-                            defaultValue = "-1"
-                        })
-                    ){
+                        route = Routes.EDIT_TODO_SCREEN + "?todoId={todoId}" + "?assignedToId={assignedToId}",
+                        arguments = listOf(
+                            navArgument(name = "todoId"){
+                                type = NavType.StringType
+                                defaultValue = "-1"
+                            },
+                            navArgument(name = "assignedToId"){
+                                type = NavType.StringType
+                                defaultValue = "-1"
+                            })
+                        ){
                         EditTodoScreen(
                             todoId = it.arguments?.getString("todoId") ?: "-1",
+                            assignedToId = it.arguments?.getString("assignedToId") ?: "-1",
                             popUpScreen = UpNextAppState::popUp,
                             navigateTo = {route -> UpNextAppState.navigateTo(route)},
                             restartApp = {route -> UpNextAppState.clearAndNavigate(route)}
