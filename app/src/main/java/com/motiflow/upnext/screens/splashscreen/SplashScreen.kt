@@ -19,9 +19,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    openAndPopUp: (String, String) -> Unit
+    openAndPopUp: (String, String) -> Unit,
+    viewModel: SplashViewModel = viewModel()
 ) {
-    val viewModel = remember{ SplashViewModel() }
 
     Box(
         modifier = Modifier
@@ -37,7 +37,7 @@ fun SplashScreen(
     }
 
     LaunchedEffect(Unit) {
-        delay(1000L)
+        delay(500L)
         viewModel.onAppStart(openAndPopUp)
     }
 }

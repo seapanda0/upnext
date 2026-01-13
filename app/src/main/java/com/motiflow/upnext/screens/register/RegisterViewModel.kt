@@ -13,6 +13,7 @@ import com.motiflow.upnext.AccountType
 import com.motiflow.upnext.User
 import com.motiflow.upnext.model.DataRepoService
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class RegisterViewModel() : ViewModel(){
@@ -49,8 +50,18 @@ class RegisterViewModel() : ViewModel(){
 
                 DataRepoService.addUser(registeringUser.value)
 
-                openAndPopUp(Routes.WORKER_TODO_LIST_SCREEN, Routes.LOGIN_SCREEN)
-
+                val user = DataRepoService.currentUser.first()
+                when(registeringUser.value.accountType){
+                    AccountType.MANAGER -> {
+                        openAndPopUp(Routes.MANAGER_WORKER_LIST_SCREEN, Routes.REGISTER_SCREEN)
+                    }
+                    AccountType.WORKER -> {
+                        openAndPopUp(Routes.WORKER_TODO_LIST_SCREEN, Routes.REGISTER_SCREEN)
+                    }
+                    null -> {
+                        openAndPopUp(Routes.SPLASH_SCREEN, Routes.REGISTER_SCREEN)
+                    }
+                }
             } catch (e: FirebaseAuthWeakPasswordException) {
 
             } catch (e: FirebaseAuthInvalidCredentialsException){

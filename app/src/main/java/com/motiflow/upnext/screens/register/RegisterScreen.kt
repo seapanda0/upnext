@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -35,99 +36,103 @@ fun RegisterScreen(
     val registeringUser = viewModel.registeringUser.collectAsState()
     val password = viewModel.password.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
-        Text(
-            text = "Create account",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Text(
-            text = "Join us and get started",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = registeringUser.value.email,
-            onValueChange = { viewModel.updateEmail(it) },
-            label = { Text("Email") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = registeringUser.value.username,
-            onValueChange = { viewModel.updateUserName(it) },
-            label = { Text("Username") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = password.value,
-            onValueChange = { viewModel.updatePassword(it) },
-            label = { Text("Password") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-        Text(
-            text = "Account type",
-            style = MaterialTheme.typography.labelMedium
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(24.dp)
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Top
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = registeringUser.value.accountType == AccountType.WORKER,
-                    onClick = { viewModel.updateAccountType(AccountType.WORKER) }
-                )
-                Text("Worker")
+            Text(
+                text = "Create account",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Text(
+                text = "UpNext - Task Management Simplified",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = registeringUser.value.email,
+                onValueChange = { viewModel.updateEmail(it) },
+                label = { Text("Email") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = registeringUser.value.username,
+                onValueChange = { viewModel.updateUserName(it) },
+                label = { Text("Username") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = password.value,
+                onValueChange = { viewModel.updatePassword(it) },
+                label = { Text("Password") },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(
+                text = "Account type",
+                style = MaterialTheme.typography.labelMedium
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = registeringUser.value.accountType == AccountType.WORKER,
+                        onClick = { viewModel.updateAccountType(AccountType.WORKER) }
+                    )
+                    Text("Worker")
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = registeringUser.value.accountType == AccountType.MANAGER,
+                        onClick = { viewModel.updateAccountType(AccountType.MANAGER) }
+                    )
+                    Text("Manager")
+                }
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(
-                    selected = registeringUser.value.accountType == AccountType.MANAGER,
-                    onClick = { viewModel.updateAccountType(AccountType.MANAGER) }
-                )
-                Text("Manager")
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { viewModel.onRegisterClick(openAndPopUp) }
+            ) {
+                Text("Register")
             }
-        }
 
-        Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(12.dp))
 
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { viewModel.onRegisterClick(openAndPopUp) }
-        ) {
-            Text("Register")
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        TextButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = { viewModel.switchToLogin(navigateTo) }
-        ) {
-            Text("Already have an account? Login")
+            TextButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = { viewModel.switchToLogin(navigateTo) }
+            ) {
+                Text("Already have an account? Login")
+            }
         }
     }
+
 }

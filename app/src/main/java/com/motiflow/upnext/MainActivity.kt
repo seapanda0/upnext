@@ -12,9 +12,9 @@ import androidx.navigation.navArgument
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import com.motiflow.upnext.screens.addnewtodo.AddNewTodoScreen
 import com.motiflow.upnext.screens.edittodoscreen.EditTodoScreen
 import com.motiflow.upnext.screens.login.LoginScreen
+import com.motiflow.upnext.screens.managerworkerlistscreen.ManagerWorkerListScreen
 import com.motiflow.upnext.screens.register.RegisterScreen
 import com.motiflow.upnext.screens.splashscreen.SplashScreen
 import com.motiflow.upnext.screens.workertodolistscreen.WorkerTodoListScreen
@@ -59,15 +59,16 @@ class MainActivity : ComponentActivity() {
                             navigateTo = {route -> UpNextAppState.navigateTo(route)},
                         )
                     }
+                    composable (route = Routes.MANAGER_WORKER_LIST_SCREEN){
+                        ManagerWorkerListScreen(
+                            navigateTo = {route -> UpNextAppState.navigateTo(route)}
+                        )
+                    }
                     composable(
                         route = Routes.WORKER_TODO_LIST_SCREEN
                     ){
                         WorkerTodoListScreen(navigateTo = {route -> UpNextAppState.navigateTo(route)})
                     }
-//                    composable (
-//                        route = Routes.ADD_NEW_TODO_SCREEN
-//                    ){ AddNewTodoScreen() }
-
                     composable (
                         route = Routes.EDIT_TODO_SCREEN + "?todoId={todoId}",
                         arguments = listOf(navArgument(name = "todoId"){

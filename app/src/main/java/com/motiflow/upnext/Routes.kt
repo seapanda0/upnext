@@ -5,7 +5,6 @@ object Routes {
     const val LOGIN_SCREEN = "login_screen"
     const val REGISTER_SCREEN = "register_screen"
     const val WORKER_TODO_LIST_SCREEN = "worker_todo_list_screen"
-    const val ADD_NEW_TODO_SCREEN = "add_new_todo_screen"
     const val EDIT_TODO_SCREEN = "edit_todo_screen"
-
+    const val MANAGER_WORKER_LIST_SCREEN = "manager_worker_list_screen"
 }

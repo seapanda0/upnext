@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -78,149 +79,155 @@ fun EditTodoScreen(
     var deadlineTimeMillis by remember(todo.id) { mutableStateOf(todo.deadlineAt?.toDate()?.time ?: System.currentTimeMillis()) }
     var showDeadlineDatePicker by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-
-        Text(
-            text ="Edit To-do",
-            style = MaterialTheme.typography.headlineSmall
-        )
-        // TITLE FIELD
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // DESCRIPTION FIELD
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth(),
-            minLines = 3
-        )
-
-        // Acceptance status
-        EnumDropdown(
-            label = "Acceptance Status",
-            selected = acceptance,
-            values = AcceptanceStatus.entries,
-            onSelected = { acceptance = it }
-        )
-
-        // Todo Status
-        EnumDropdown(
-            label = "Todo Status",
-            selected = status,
-            values = TodoStatus.entries,
-            onSelected = { status = it }
-        )
-
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
-
-        // SCHEDULED TIME AND DEADLINE TIME START
-        // ---- Scheduled ----
-        DateTimeRow(
-            label = "Scheduled",
-            dateMillis = scheduledDateMillis,
-            timeMillis = scheduledTimeMillis,
-            onDateClick = { showScheduledDatePicker = true },
-            onTimeClick = {
-                showTimePicker(context, scheduledTimeMillis) {
-                    scheduledTimeMillis = it
-                }
-            }
-        )
-
-        if (showScheduledDatePicker) {
-            DatePickerDialogComposable(
-                initialMillis = scheduledDateMillis,
-                onDateSelected = { scheduledDateMillis = it },
-                onDismiss = { showScheduledDatePicker = false }
-            )
-        }
-
-        // ---- Deadline ----
-        DateTimeRow(
-            label = "Deadline",
-            dateMillis = deadlineDateMillis,
-            timeMillis = deadlineTimeMillis,
-            onDateClick = { showDeadlineDatePicker = true },
-            onTimeClick = {
-                showTimePicker(context, deadlineTimeMillis) {
-                    deadlineTimeMillis = it
-                }
-            }
-        )
-
-        if (showDeadlineDatePicker) {
-            DatePickerDialogComposable(
-                initialMillis = deadlineDateMillis,
-                onDateSelected = { deadlineDateMillis = it },
-                onDismiss = { showDeadlineDatePicker = false }
-            )
-        }
-
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
-
-        // SCHEDULED TIME AND DEADLINE TIME END
-
-        // ---- Read-only fields ----
-        Text(
-            text = "Created by ${todo.createdByName}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Text(
-            text = "Last updated ${todo.updateAt.toDate()}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            OutlinedButton(
-                modifier = Modifier.weight(1f),
-                onClick = { viewModel.onCancelEdit(popUpScreen) }
-            ) {
-                Text("Cancel")
+
+            Text(
+                text ="Edit To-do",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            // TITLE FIELD
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Title") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // DESCRIPTION FIELD
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Description") },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3
+            )
+
+            // Acceptance status
+            EnumDropdown(
+                label = "Acceptance Status",
+                selected = acceptance,
+                values = AcceptanceStatus.entries,
+                onSelected = { acceptance = it }
+            )
+
+            // Todo Status
+            EnumDropdown(
+                label = "Todo Status",
+                selected = status,
+                values = TodoStatus.entries,
+                onSelected = { status = it }
+            )
+
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // SCHEDULED TIME AND DEADLINE TIME START
+            // ---- Scheduled ----
+            DateTimeRow(
+                label = "Scheduled",
+                dateMillis = scheduledDateMillis,
+                timeMillis = scheduledTimeMillis,
+                onDateClick = { showScheduledDatePicker = true },
+                onTimeClick = {
+                    showTimePicker(context, scheduledTimeMillis) {
+                        scheduledTimeMillis = it
+                    }
+                }
+            )
+
+            if (showScheduledDatePicker) {
+                DatePickerDialogComposable(
+                    initialMillis = scheduledDateMillis,
+                    onDateSelected = { scheduledDateMillis = it },
+                    onDismiss = { showScheduledDatePicker = false }
+                )
             }
 
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {
-                    viewModel.todo.value = viewModel.todo.value.copy(
-                        title = title,
-                        description = description,
-                        acceptance = acceptance,
-                        status = status,
-                        scheduledAt = combineDateAndTime(
-                            scheduledDateMillis,
-                            scheduledTimeMillis
-                        ),
-                        deadlineAt = combineDateAndTime(
-                            deadlineDateMillis,
-                            deadlineTimeMillis
-                        ),
-                        updateAt = Timestamp.now()
-                    )
-                    viewModel.saveTodo(popUpScreen)
+            // ---- Deadline ----
+            DateTimeRow(
+                label = "Deadline",
+                dateMillis = deadlineDateMillis,
+                timeMillis = deadlineTimeMillis,
+                onDateClick = { showDeadlineDatePicker = true },
+                onTimeClick = {
+                    showTimePicker(context, deadlineTimeMillis) {
+                        deadlineTimeMillis = it
+                    }
                 }
+            )
+
+            if (showDeadlineDatePicker) {
+                DatePickerDialogComposable(
+                    initialMillis = deadlineDateMillis,
+                    onDateSelected = { deadlineDateMillis = it },
+                    onDismiss = { showDeadlineDatePicker = false }
+                )
+            }
+
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // SCHEDULED TIME AND DEADLINE TIME END
+
+            // ---- Read-only fields ----
+            Text(
+                text = "Created by ${todo.createdByName}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Text(
+                text = "Last updated ${todo.updateAt.toDate()}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Save")
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { viewModel.onCancelEdit(popUpScreen) }
+                ) {
+                    Text("Cancel")
+                }
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        viewModel.todo.value = viewModel.todo.value.copy(
+                            title = title,
+                            description = description,
+                            acceptance = acceptance,
+                            status = status,
+                            scheduledAt = combineDateAndTime(
+                                scheduledDateMillis,
+                                scheduledTimeMillis
+                            ),
+                            deadlineAt = combineDateAndTime(
+                                deadlineDateMillis,
+                                deadlineTimeMillis
+                            ),
+                            updateAt = Timestamp.now()
+                        )
+                        viewModel.saveTodo(popUpScreen)
+                    }
+                ) {
+                    Text("Save")
+                }
             }
         }
+
     }
 }
 

@@ -1,15 +1,21 @@
 package com.motiflow.upnext.model
 
+import android.accounts.Account
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.snapshots
 import com.google.firebase.firestore.toObject
+import com.motiflow.upnext.AccountType
 import com.motiflow.upnext.Todo
 import com.motiflow.upnext.TodoStatus
 import com.motiflow.upnext.User
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 object COLLECTIONS {
@@ -21,10 +27,11 @@ object TODO_DOCUMENT_FIELDS{
 }
 
 object USER_DOCUMENT_FIELDS{
-    const val UID = "user"
+    const val UID = "uid"
+    const val ACCOUNT_TYPE = "accountType"
 }
-
 object DataRepoService {
+    @OptIn(ExperimentalCoroutinesApi::class)
     val todos: Flow<List<Todo>>
         get() =
             AccountService.currentUser.flatMapLatest { user ->
@@ -33,6 +40,26 @@ object DataRepoService {
                     .whereEqualTo(TODO_DOCUMENT_FIELDS.assignmentUID, user?.uid)
                     .dataObjects()
             }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentUser: Flow<User?>
+        get() =
+            AccountService.currentUser.flatMapLatest { firebaseuser ->
+                if (firebaseuser == null){
+                    flowOf(null)
+                }else{
+                    Firebase.firestore
+                        .collection(COLLECTIONS.USER)
+                        .document(firebaseuser.uid)
+                        .snapshots()
+                        .map{it.toObject(User::class.java)}
+                }
+            }
+    val allWorkers: Flow<List<User>>
+        get() =
+            Firebase.firestore
+                .collection(COLLECTIONS.USER)
+                .whereEqualTo(USER_DOCUMENT_FIELDS.ACCOUNT_TYPE, AccountType.WORKER.name)
+                .dataObjects()
     suspend fun addUser(user: User){
         Firebase.firestore
             .collection(COLLECTIONS.USER)
@@ -56,7 +83,6 @@ object DataRepoService {
             .add(todoWithMetaData)
             .await()
     }
-
     suspend fun readTodo(todoId: String): Todo? {
         return Firebase.firestore
             .collection(COLLECTIONS.TODO)
@@ -75,5 +101,4 @@ object DataRepoService {
             .collection(COLLECTIONS.TODO)
             .document(todoId).delete().await()
     }
-
 }
