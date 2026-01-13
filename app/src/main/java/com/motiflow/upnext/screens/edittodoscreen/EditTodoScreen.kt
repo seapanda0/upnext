@@ -3,19 +3,28 @@ package com.motiflow.upnext.screens.edittodoscreen
 import android.app.TimePickerDialog
 import android.content.Context
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -71,27 +80,35 @@ fun EditTodoScreen(
     var deadlineTimeMillis by remember(todo.id) { mutableStateOf(todo.deadlineAt?.toDate()?.time ?: System.currentTimeMillis()) }
     var showDeadlineDatePicker by remember { mutableStateOf(false) }
 
-    Column {
-        Text("Edit Todo")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
 
-        Spacer(Modifier.height(8.dp))
-
-        Text("Title")
-        TextField(
+        Text(
+            text ="Edit To-do",
+            style = MaterialTheme.typography.headlineSmall
+        )
+        // TITLE FIELD
+        OutlinedTextField(
             value = title,
-            onValueChange = { title = it }
+            onValueChange = { title = it },
+            label = { Text("Title") },
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(8.dp))
-
-        Text("Description")
-        TextField(
+        // DESCRIPTION FIELD
+        OutlinedTextField(
             value = description,
-            onValueChange = { description = it }
+            onValueChange = { description = it },
+            label = { Text("Description") },
+            modifier = Modifier.fillMaxWidth(),
+            minLines = 3
         )
 
-        Spacer(Modifier.height(8.dp))
-
+        // Acceptance status
         EnumDropdown(
             label = "Acceptance Status",
             selected = acceptance,
@@ -99,8 +116,7 @@ fun EditTodoScreen(
             onSelected = { acceptance = it }
         )
 
-        Spacer(Modifier.height(8.dp))
-
+        // Todo Status
         EnumDropdown(
             label = "Todo Status",
             selected = status,
@@ -108,7 +124,7 @@ fun EditTodoScreen(
             onSelected = { status = it }
         )
 
-        Spacer(Modifier.height(16.dp))
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
 
         // --- Scheduled Date & Time ---
         Text(text = "Scheduled:")
@@ -171,37 +187,53 @@ fun EditTodoScreen(
         Spacer(Modifier.height(16.dp))
 
         // ---- Read-only fields ----
-        Text("Created By")
-        Text(todo.createdByName)
+        Text(
+            text = "Created by ${todo.createdByName}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
-        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "Last updated ${todo.updateAt.toDate()}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
-        Text("Last Updated At")
-        Text(todo.updateAt.toDate().toString())
+        Spacer(Modifier.weight(1f))
 
-        Spacer(Modifier.height(16.dp))
-
-        Row {
-            Button(onClick = {
-                // Update the state first
-                viewModel.todo.value = viewModel.todo.value.copy(
-                    title = title,
-                    description = description,
-                    acceptance = acceptance,
-                    status = status,
-                    scheduledAt = combineDateAndTime(scheduledDateMillis, scheduledTimeMillis),
-                    deadlineAt = combineDateAndTime(deadlineDateMillis, deadlineTimeMillis),
-                    updateAt = Timestamp.now()
-                )
-                viewModel.saveTodo(popUpScreen)
-            }){
-                Text("Save")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            OutlinedButton(
+                modifier = Modifier.weight(1f),
+                onClick = { viewModel.onCancelEdit(popUpScreen) }
+            ) {
+                Text("Cancel")
             }
 
-            Spacer(Modifier.width(8.dp))
-
-            Button(onClick = {viewModel.onCancelEdit(popUpScreen)}) {
-                Text("Cancel")
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    viewModel.todo.value = viewModel.todo.value.copy(
+                        title = title,
+                        description = description,
+                        acceptance = acceptance,
+                        status = status,
+                        scheduledAt = combineDateAndTime(
+                            scheduledDateMillis,
+                            scheduledTimeMillis
+                        ),
+                        deadlineAt = combineDateAndTime(
+                            deadlineDateMillis,
+                            deadlineTimeMillis
+                        ),
+                        updateAt = Timestamp.now()
+                    )
+                    viewModel.saveTodo(popUpScreen)
+                }
+            ) {
+                Text("Save")
             }
         }
     }
@@ -244,13 +276,19 @@ fun <T : Enum<T>> EnumDropdown(
     var expanded by remember { mutableStateOf(false) }
 
     Column {
-        Text(label)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium
+        )
 
-        Box {
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = true }
+        ) {
             Text(
                 text = selected.name,
-                modifier = Modifier
-                    .clickable { expanded = true }
+                modifier = Modifier.padding(16.dp)
             )
 
             DropdownMenu(
@@ -270,6 +308,7 @@ fun <T : Enum<T>> EnumDropdown(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialogComposable(
@@ -288,5 +327,47 @@ fun DatePickerDialogComposable(
         }
     ) {
         DatePicker(state)
+    }
+}
+
+@Composable
+fun DateTimeRow(
+    label: String,
+    dateMillis: Long,
+    timeMillis: Long,
+    onDateClick: () -> Unit,
+    onTimeClick: () -> Unit
+) {
+    Column {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AssistChip(
+                onClick = onDateClick,
+                label = {
+                    Text(
+                        SimpleDateFormat(
+                            "yyyy-MM-dd",
+                            Locale.getDefault()
+                        ).format(Date(dateMillis))
+                    )
+                }
+            )
+
+            AssistChip(
+                onClick = onTimeClick,
+                label = {
+                    Text(
+                        SimpleDateFormat(
+                            "HH:mm",
+                            Locale.getDefault()
+                        ).format(Date(timeMillis))
+                    )
+                }
+            )
+        }
     }
 }
