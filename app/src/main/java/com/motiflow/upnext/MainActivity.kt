@@ -20,7 +20,7 @@ import com.motiflow.upnext.screens.splashscreen.SplashScreen
 import com.motiflow.upnext.screens.workertodolistscreen.WorkerTodoListScreen
 import com.motiflow.upnext.ui.theme.UpNextTheme
 
-const val USE_EMULATOR = true
+const val USE_EMULATOR = false
 const val LOCALHOST = "192.168.100.164"
 const val AUTH_PORT = 9099
 const val FIRESTORE_PORT = 8080

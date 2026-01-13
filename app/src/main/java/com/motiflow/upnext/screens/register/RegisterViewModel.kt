@@ -51,6 +51,7 @@ class RegisterViewModel() : ViewModel(){
                 DataRepoService.addUser(registeringUser.value)
 
                 val user = DataRepoService.currentUser.first()
+                DataRepoService.accountInitialCheck()
                 when(registeringUser.value.accountType){
                     AccountType.MANAGER -> {
                         openAndPopUp(Routes.MANAGER_WORKER_LIST_SCREEN, Routes.REGISTER_SCREEN)

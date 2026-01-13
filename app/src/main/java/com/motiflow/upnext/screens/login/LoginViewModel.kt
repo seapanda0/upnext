@@ -31,6 +31,7 @@ class LoginViewModel() : ViewModel(){
             try{
                 AccountService.signIn(email.value, password.value)
                 val user = DataRepoService.currentUser.first()
+                DataRepoService.accountInitialCheck()
                 when(user?.accountType){
                     AccountType.MANAGER -> {
                         openAndPopUp(Routes.MANAGER_WORKER_LIST_SCREEN, Routes.LOGIN_SCREEN)
@@ -42,6 +43,7 @@ class LoginViewModel() : ViewModel(){
                         openAndPopUp(Routes.SPLASH_SCREEN, Routes.LOGIN_SCREEN)
                     }
                 }
+
 
             } catch (e: FirebaseAuthInvalidUserException) {
 
