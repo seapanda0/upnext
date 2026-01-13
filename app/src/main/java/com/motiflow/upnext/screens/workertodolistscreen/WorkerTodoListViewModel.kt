@@ -17,6 +17,14 @@ class WorkerTodoListViewModel() : ViewModel() {
         // concatnate the todoID here
         navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=${todoId}")
     }
+    fun addnewTodo(navigateTo: (String) -> Unit){
+        navigateTo(Routes.EDIT_TODO_SCREEN+"?todoId=-1")
+    }
+    fun onDeleteTodo(todoId: String){
+        viewModelScope.launch {
+            DataRepoService.deleteTodo(todoId)
+        }
+    }
     fun onDummyAddTodoClick(){
         viewModelScope.launch {
 //            Log.d("WORKER TODO VM", "BUTTON PRESSED")

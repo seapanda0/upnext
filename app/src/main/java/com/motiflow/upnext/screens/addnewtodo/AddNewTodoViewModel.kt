@@ -1,4 +1,6 @@
 package com.motiflow.upnext.screens.addnewtodo
 
-class AddNewTodoViewModel {
+import androidx.lifecycle.ViewModel
+
+class AddNewTodoViewModel(): ViewModel() {
 }

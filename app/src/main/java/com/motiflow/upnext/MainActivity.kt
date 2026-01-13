@@ -64,9 +64,9 @@ class MainActivity : ComponentActivity() {
                     ){
                         WorkerTodoListScreen(navigateTo = {route -> UpNextAppState.navigateTo(route)})
                     }
-                    composable (
-                        route = Routes.ADD_NEW_TODO_SCREEN
-                    ){ AddNewTodoScreen() }
+//                    composable (
+//                        route = Routes.ADD_NEW_TODO_SCREEN
+//                    ){ AddNewTodoScreen() }
 
                     composable (
                         route = Routes.EDIT_TODO_SCREEN + "?todoId={todoId}",

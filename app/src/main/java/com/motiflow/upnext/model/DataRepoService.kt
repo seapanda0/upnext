@@ -5,7 +5,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
-import com.motiflow.upnext.AcceptanceStatus
 import com.motiflow.upnext.Todo
 import com.motiflow.upnext.TodoStatus
 import com.motiflow.upnext.User
@@ -46,13 +45,8 @@ object DataRepoService {
             createdByUid = AccountService.currentUserId,
             assignedToUid = AccountService.currentUserId,
 
-            // Dummy section below, change later
-            title = "SE Assignment Chart",
-            description = "Gantt chart, UML Remember Draw",
-            scheduledAt = Timestamp.now(),
-            deadlineAt = Timestamp.now(),
+            // Undecided yet
             createdByName = "PLACEHOLDER NAME",
-            acceptance = AcceptanceStatus.NOT_APPLICABLE,
             status = TodoStatus.NOT_STARTED,
             createdAt = Timestamp.now(),
             updateAt = Timestamp.now()
